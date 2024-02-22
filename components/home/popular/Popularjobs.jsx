@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { COLORS, SIZES } from "@/constants";
+import { useRouter } from "expo-router";
 import useFetch from "../../../hook/useFetch";
 import PopularJobCard from "../../common/cards/popular/PopularJobCard";
 import styles from "./popularjobs.style";
@@ -18,7 +19,12 @@ const Popularjobs = () => {
     num_pages: 1,
   });
 
-  console.log(data);
+  const router = useRouter();
+
+  const handleCardPress = (item) => {
+    router.push(`/job-details/${item?.job_id}`);
+    
+  };
 
   return (
     <View style={styles.container}>
@@ -36,7 +42,9 @@ const Popularjobs = () => {
         ) : (
           <FlatList
             data={data}
-            renderItem={({ item }) => <PopularJobCard item={item} />}
+            renderItem={({ item }) => (
+              <PopularJobCard item={item} handleCardPress={handleCardPress} />
+            )}
             keyExtractor={(item) => item?.job_id}
             contentContainerStyle={{ columnGap: SIZES.medium }}
             horizontal

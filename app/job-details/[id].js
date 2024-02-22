@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   RefreshControl,
@@ -23,10 +23,19 @@ import useFetch from "../../hook/useFetch";
 const tabs = ["About", "Qualifications", "Responsibilities"];
 
 const JobDetails = () => {
+  const params = new useLocalSearchParams();
+  const router = useRouter();
+  const { data, isLoading, error, refetch } = useFetch("job-details", {
+    job_id: params.id,
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
-  const onRefresh = () => {};
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    setRefreshing(false);
+  }, []);
 
   const displayTabContent = () => {
     switch (activeTab) {
@@ -53,15 +62,6 @@ const JobDetails = () => {
         break;
     }
   };
-
-  const params = new useLocalSearchParams();
-  console.log(params);
-
-  const router = useRouter();
-
-  const { data, isLoading, error, refetch } = useFetch("job-details", {
-    job_id: params.id,
-  });
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWeight }}>
